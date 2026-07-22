@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>White labeling — Login</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+
+  <style>
+    :root {
+      --brand: #00695c;          /* Tropical Rain Forest / tb-primary */
+      --accent: #ff5722;         /* tb-accent */
+      --red: #f44336;            /* reset */
+      --black-87: rgba(0, 0, 0, 0.87);
+      --black-76: rgba(0, 0, 0, 0.76);
+      --black-54: rgba(0, 0, 0, 0.54);
+      --black-38: rgba(0, 0, 0, 0.38);
+      --black-33: rgba(0, 0, 0, 0.33);
+      --grey-40: #666666;        /* Dove Gray */
+      --border-12: rgba(0, 0, 0, 0.12);
+      --border-38: rgba(0, 0, 0, 0.38);
+      --white: #ffffff;
+      --page-bg: #eeeeee;
+      /* Live login-preview colours — updated by the Appearance controls */
+      --login-primary: #00695c;   /* Primary palette → card background */
+      --login-accent: #ff5722;    /* Accent palette → button */
+      --login-page-bg: #eeeeee;   /* Page background color → area behind the card */
+      --login-fg: #ffffff;        /* Dark foreground → the two circle+bar rows (white | #212121) */
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; }
+    body {
+      background: var(--page-bg);
+      color: var(--black-87);
+      font-family: "Roboto", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    .material-icons, .material-icons-outlined { font-weight: normal; font-style: normal; line-height: 1; letter-spacing: normal; text-transform: none; white-space: nowrap; word-wrap: normal; direction: ltr; -webkit-font-feature-settings: "liga"; font-feature-settings: "liga"; }
+    .material-icons { font-family: "Material Icons"; }
+    .material-icons-outlined { font-family: "Material Icons Outlined"; }
+    img { display: block; }
+
+    /* ============ Tabs ============ */
+    .tb-tabs {
+      display: flex;
+      background: var(--white);
+      border-bottom: 1px solid var(--border-12);
+    }
+    .tb-tab {
+      display: flex;
+      align-items: center;
+      height: 49px;
+      padding: 0 24px;
+      color: var(--black-54);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+    .tb-tab .material-icons { font-size: 18px; margin-right: 8px; }
+    .tb-tab-label { font-size: 14px; font-weight: 500; }
+    .tb-tab--active {
+      color: var(--brand);
+      box-shadow: inset 0 -4px 0 var(--brand);
+    }
+
+    /* ============ Page & card ============ */
+    .tb-page {
+      display: flex;
+      justify-content: center;
+      padding: 12px;
+    }
+    .tb-card {
+      width: 700px;
+      background: var(--white);
+      border: 1px solid var(--border-12);
+      border-radius: 4px;
+    }
+    .tb-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 16px 12px;
+    }
+    .tb-card-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 32px;
+      color: var(--black-87);
+    }
+    .tb-icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border: none;
+      background: transparent;
+      border-radius: 50%;
+      color: var(--black-54);
+      cursor: pointer;
+    }
+    .tb-icon-btn:hover { background: rgba(0, 0, 0, 0.04); }
+    .tb-icon-btn .material-icons { font-size: 24px; }
+
+    .tb-card-body {
+      display: flex;
+      flex-direction: column;
+      gap: 42px;
+      padding: 16px;
+    }
+
+    /* ============ Sections ============ */
+    .tb-section { display: flex; flex-direction: column; gap: 20px; }
+
+    .tb-section-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: var(--black-87);
+    }
+
+    /* ============ Labels / hints ============ */
+    .tb-label { display: flex; flex-direction: column; gap: 6px; }
+    .tb-label-title { font-size: 14px; font-weight: 500; color: var(--black-87); }
+    .tb-label-hint { font-size: 13px; font-weight: 400; color: var(--grey-40); }
+
+    /* ============ Outlined text field ============ */
+    /* ===== MD2 outlined text field with floating label ===== */
+    .tb-input { position: relative; display: block; }
+    .tb-input-field {
+      display: block;
+      width: 100%;
+      height: 56px;
+      padding: 0 16px;
+      border: 1px solid var(--border-38);
+      border-radius: 4px;
+      background: var(--white);
+      font: inherit;
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      color: var(--black-87);
+      outline: none;
+    }
+    .tb-input-field::placeholder { color: transparent; }
+    .tb-input:hover .tb-input-field:not(:focus) { border-color: var(--black-87); }
+    .tb-input-field:focus { border-color: var(--brand); box-shadow: inset 0 0 0 1px var(--brand); }
+    .tb-input-label {
+      position: absolute;
+      left: 12px;
+      top: -8px;
+      padding: 0 4px;
+      background: var(--white);
+      font-size: 12px;
+      letter-spacing: 0.4px;
+      color: var(--black-54);
+      pointer-events: none;
+      transition: top .12s ease, left .12s ease, font-size .12s ease, transform .12s ease, color .12s ease;
+    }
+    /* resting position while empty & unfocused (label sits inside as placeholder) */
+    .tb-input-field:placeholder-shown:not(:focus) + .tb-input-label {
+      top: 50%;
+      left: 16px;
+      transform: translateY(-50%);
+      font-size: 16px;
+      padding: 0;
+    }
+    .tb-input-field:focus + .tb-input-label { color: var(--brand); }
+
+    /* Outlined field with a trailing text action (e.g. "Domain name" + "Create new") */
+    .tb-textfield-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 56px;
+      padding: 0 16px;
+      border: 1px solid var(--border-38);
+      border-radius: 4px;
+    }
+    .tb-textfield-wrap:hover:not(:focus-within) { border-color: var(--black-87); }
+    .tb-textfield-wrap:focus-within { border-color: var(--brand); box-shadow: inset 0 0 0 1px var(--brand); }
+    .tb-textfield-wrap input {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      outline: none;
+      background: transparent;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      color: var(--black-87);
+    }
+    .tb-textfield-wrap input::placeholder { color: transparent; }
+    .tb-textfield-wrap input:placeholder-shown:not(:focus) + .tb-input-label {
+      top: 50%; left: 16px; transform: translateY(-50%); font-size: 16px; padding: 0;
+    }
+    .tb-textfield-wrap input:focus + .tb-input-label { color: var(--brand); }
+    .tb-textfield-link {
+      flex: none;
+      border: none;
+      background: transparent;
+      padding: 0;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--brand);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .tb-textfield-link:hover { text-decoration: underline; }
+
+    /* ============ Upload field ============ */
+    .tb-field { display: flex; flex-direction: column; gap: 8px; }
+    .tb-upload {
+      display: flex;
+      align-items: stretch;
+      height: 98px;
+      border: 1px solid var(--border-12);
+      border-radius: 4px;
+    }
+    .tb-upload-preview {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 95px;
+      flex: 0 0 95px;
+      border-right: 1px solid var(--border-12);
+      text-align: center;
+    }
+    .tb-upload-preview span {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      letter-spacing: 0.4px;
+      color: var(--black-38);
+    }
+    .tb-upload-actions {
+      flex: 1;
+      display: flex;
+      gap: 8px;
+      padding: 8px;
+    }
+    .tb-upload-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-width: 64px;
+      padding: 17px;
+      border: 1px solid var(--brand);
+      border-radius: 4px;
+      background: var(--white);
+      cursor: pointer;
+    }
+    .tb-upload-btn:hover { background: rgba(0, 105, 92, 0.04); }
+    .tb-upload-btn .material-icons { font-size: 24px; color: var(--brand); }
+    .tb-upload-btn span:last-child {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.375px;
+      color: var(--brand);
+    }
+
+    /* ============ Logo height (label + hint left, number field right) ============ */
+    .tb-height-row { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .tb-height-row .tb-label { flex: 1; }
+    .tb-number {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 56px;
+      width: 121px;
+      flex: none;
+      padding: 0 12px 0 16px;
+      border: 1px solid var(--border-38);
+      border-radius: 4px;
+    }
+    .tb-number:hover:not(:focus-within) { border-color: var(--black-87); }
+    .tb-number:focus-within { border-color: var(--brand); box-shadow: inset 0 0 0 1px var(--brand); }
+    .tb-number-value {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 0;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      color: var(--black-87);
+    }
+    .tb-number-value::-webkit-outer-spin-button,
+    .tb-number-value::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .tb-number-value { -moz-appearance: textfield; }
+    .tb-stepper { display: flex; flex-direction: column; gap: 4px; }
+    .tb-stepper button {
+      display: block;
+      border: none;
+      background: transparent;
+      padding: 2px;
+      margin: -2px;
+      cursor: pointer;
+      line-height: 0;
+    }
+    .tb-stepper img { width: 10px; height: 5px; pointer-events: none; }
+    .tb-stepper .up img { transform: rotate(180deg); }
+    .tb-number-unit {
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      color: var(--black-54);
+    }
+
+    /* ============ Checkboxes (Material Icons: check_box / check_box_outline_blank) ============ */
+    .tb-checks { display: flex; flex-direction: column; gap: 12px; }
+    .tb-check { display: flex; gap: 8px; align-items: flex-start; padding-right: 16px; }
+    .tb-check-ctrl {
+      position: relative;
+      flex: 0 0 40px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 2.5px;
+    }
+    .tb-check-input {
+      position: absolute;
+      inset: 0;
+      margin: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .tb-check-icon { font-size: 24px; color: var(--black-54); pointer-events: none; }
+    .tb-check-icon::before { content: "check_box_outline_blank"; }
+    .tb-check-input:checked ~ .tb-check-icon { color: var(--accent); }
+    .tb-check-input:checked ~ .tb-check-icon::before { content: "check_box"; }
+    .tb-check-input:focus-visible ~ .tb-check-icon { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 2px; }
+    .tb-check-text { display: flex; flex-direction: column; gap: 4px; padding-top: 10px; }
+    .tb-check-title { font-size: 14px; font-weight: 500; color: var(--black-87); }
+    .tb-check-hint { font-size: 13px; font-weight: 400; color: var(--grey-40); }
+
+    /* ============ Appearance : login preview ============ */
+    /* Decorative section frame only — the changeable "page background" lives
+       INSIDE the preview SVG (its --login-page-bg layers), not on this box. */
+    .tb-login-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 206px;
+      background: #fafafa;
+      border: 1px solid var(--border-12);
+      border-radius: 4px;
+    }
+    .tb-login-preview { display: block; }
+    .tb-login-preview svg { display: block; width: 262px; height: 164px; }
+
+    /* ============ Appearance : option rows ============ */
+    .tb-setting { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+    .tb-setting > .tb-label { align-self: stretch; }
+    .tb-option { display: flex; gap: 16px; align-items: flex-start; }
+    .tb-option .tb-label { flex: 1; }
+    /* Primary palette + Dark foreground are one logical group (12px apart),
+       tighter than the 20px section gap that separates it from Accent. */
+    .tb-appearance-group { display: flex; flex-direction: column; gap: 12px; }
+
+    /* Palette dropdown */
+    .tb-palette { display: flex; gap: 4px; align-items: center; flex: 0 0 auto; }
+    .tb-dd { position: relative; }
+    .tb-dd > summary { list-style: none; cursor: pointer; }
+    .tb-dd > summary::-webkit-details-marker { display: none; }
+    .tb-select {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 320px;
+      height: 54px;
+      padding: 0 12px 0 16px;
+      border: 1px solid var(--border-38);
+      border-radius: 4px;
+    }
+    .tb-select-label {
+      position: absolute;
+      top: -6px;
+      left: 12px;
+      padding: 0 4px;
+      background: var(--white);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.4px;
+      line-height: 16px;
+      color: var(--black-54);
+    }
+    .tb-swatch {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 28px;
+      flex: 0 0 40px;
+      border-radius: 99px;
+      color: var(--white);
+      font-size: 16px;
+      font-weight: 400;
+    }
+    .tb-swatch--dark { color: #212121; }
+    .tb-select-value { flex: 1; font-size: 16px; font-weight: 500; color: var(--grey-40); }
+    .tb-select-caret { margin-left: auto; padding-right: 8px; display: inline-flex; align-items: center; }
+    .tb-select-caret img { width: 10px; height: 5px; transition: transform 0.15s ease; }
+    .tb-dd[open] .tb-select-caret img { transform: rotate(180deg); }
+
+    /* Open color menu */
+    .tb-menu {
+      position: absolute;
+      left: 0;
+      top: calc(100% + 2px);
+      width: 320px;
+      max-height: 304px;
+      overflow-y: auto;
+      background: var(--white);
+      border: 1px solid var(--border-12);
+      border-radius: 4px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
+      z-index: 3;
+    }
+    .tb-color {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 8px 16px 6px;
+      border: none;
+      background: var(--white);
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .tb-color:hover { background: rgba(0, 0, 0, 0.04); }
+    .tb-color.is-selected { background: rgba(0, 105, 92, 0.1); }
+    .tb-color-name { flex: 1; font-size: 16px; font-weight: 500; letter-spacing: 0.5px; color: var(--grey-40); }
+    .tb-color-check { width: 24px; height: 24px; margin-left: auto; visibility: hidden; }
+    .tb-color.is-selected .tb-color-check { visibility: visible; }
+
+    /* Edit / palette-icon button */
+    .tb-edit-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      padding: 0;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--black-54);
+      cursor: pointer;
+    }
+    .tb-edit-btn:hover { background: rgba(0, 105, 92, 0.1); }
+    .tb-edit-btn:active { background: rgba(0, 105, 92, 0.24); }
+    .tb-edit { width: 20px; height: 20px; }
+    .tb-edit-btn .material-icons, .tb-edit-btn .material-icons-outlined { font-size: 20px; }
+    /* Palette icon matches the pencil (edit) icon colour */
+    .tb-edit-btn .material-icons-outlined { color: #1c1b1f; }
+
+    /* Page background color field */
+    .tb-pagebg-swatch {
+      width: 40px;
+      height: 28px;
+      flex: 0 0 40px;
+      border-radius: 99px;
+      background: var(--login-page-bg);
+      border: 1px solid var(--border-12);
+    }
+    .tb-pagebg-hex { flex: 1; font-size: 16px; font-weight: 500; color: var(--black-87); }
+
+    /* ===== Custom colour picker (MD2) ===== */
+    .tb-cp-backdrop { position: fixed; inset: 0; z-index: 40; background: rgba(0, 0, 0, 0.32); }
+    .tb-cp {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 41;
+      width: 296px;
+      padding: 16px;
+      background: var(--white);
+      border-radius: 4px;
+      box-shadow: 0 5px 5px -3px rgba(0,0,0,0.2), 0 8px 10px 1px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12);
+      font-family: "Roboto", sans-serif;
+    }
+    .tb-cp[hidden] { display: none; }
+    /* saturation / value square */
+    .tb-cp-sv { position: relative; width: 100%; height: 176px; border-radius: 4px; overflow: hidden; cursor: crosshair; touch-action: none; }
+    .tb-cp-sv-white { position: absolute; inset: 0; background: linear-gradient(to right, #fff, rgba(255,255,255,0)); }
+    .tb-cp-sv-black { position: absolute; inset: 0; background: linear-gradient(to top, #000, rgba(0,0,0,0)); }
+    .tb-cp-sv-thumb, .tb-cp-slider-thumb {
+      position: absolute; width: 14px; height: 14px; border-radius: 50%;
+      border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,0.3); box-sizing: border-box;
+      transform: translate(-50%, -50%); pointer-events: none;
+    }
+    .tb-cp-row { display: flex; align-items: center; gap: 16px; margin-top: 16px; }
+    .tb-cp-current { width: 44px; height: 44px; flex: 0 0 44px; border-radius: 4px; border: 1px solid var(--border-12); }
+    .tb-cp-sliders { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+    .tb-cp-slider { position: relative; height: 12px; border-radius: 6px; cursor: pointer; touch-action: none; }
+    .tb-cp-hue { background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00); }
+    .tb-cp-alpha { background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%); background-size: 8px 8px; background-position: 0 0, 0 4px, 4px -4px, -4px 0; }
+    .tb-cp-alpha-fill { position: absolute; inset: 0; border-radius: 6px; }
+    .tb-cp-slider .tb-cp-slider-thumb { top: 50%; }
+    .tb-cp-inputs { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
+    .tb-cp-mode { font-size: 14px; color: var(--black-54); display: inline-flex; align-items: center; gap: 2px; }
+    .tb-cp-hash { font-size: 16px; color: var(--black-54); }
+    .tb-cp-hex {
+      flex: 1; min-width: 0; border: none; border-bottom: 1px solid var(--border-38); outline: none;
+      font: inherit; font-size: 16px; color: var(--black-87); padding: 2px 0; text-transform: uppercase;
+    }
+    .tb-cp-hex:focus { border-bottom: 2px solid var(--brand); }
+    .tb-cp-copy { border: none; background: transparent; cursor: pointer; color: var(--black-54); display: inline-flex; padding: 2px; }
+    .tb-cp-copy .material-icons { font-size: 20px; }
+    .tb-cp-opacity { width: 44px; border: none; border-bottom: 1px solid var(--border-38); outline: none; font: inherit; font-size: 16px; color: var(--black-87); text-align: right; padding: 2px 0; }
+    .tb-cp-pct { font-size: 16px; color: var(--black-54); }
+    .tb-cp-presets { display: grid; grid-template-columns: repeat(12, 1fr); gap: 7px; margin-top: 16px; }
+    .tb-cp-preset { width: 100%; aspect-ratio: 1; border: none; border-radius: 4px; cursor: pointer; padding: 0; }
+    .tb-cp-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; }
+    .tb-cp-actions-right { display: flex; gap: 8px; }
+    .tb-cp-txtbtn {
+      border: none; background: transparent; cursor: pointer; font: inherit; font-size: 14px; font-weight: 500;
+      letter-spacing: 0.4px; padding: 8px 8px; border-radius: 4px; color: var(--black-54);
+    }
+    .tb-cp-txtbtn:hover { background: rgba(0,0,0,0.04); }
+    .tb-cp-txtbtn.is-primary { color: var(--brand); }
+    .tb-cp-input { position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none; }
+
+    /* Advanced CSS button */
+    .tb-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 36px;
+      min-width: 64px;
+      padding: 0 16px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.438px;
+      cursor: pointer;
+      background: transparent;
+    }
+    .tb-btn--outline-brand { border-color: var(--brand); color: var(--brand); background: var(--white); }
+    .tb-btn--outline-brand:hover { background: rgba(0, 105, 92, 0.04); }
+    .tb-btn--outline-red { border-color: var(--red); color: var(--red); }
+    .tb-btn--outline-red:hover { background: rgba(244, 67, 54, 0.04); }
+    .tb-btn--outline-red img { width: 18px; height: 18px; }
+    .tb-btn--preview {
+      background: var(--white);
+      color: var(--black-87);
+      box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    }
+    .tb-btn--save { background: rgba(0, 0, 0, 0.1); color: var(--black-33); cursor: default; }
+    /* Enabled after any change — MD2 raised primary button */
+    .tb-btn--save:enabled {
+      background: var(--brand);
+      color: var(--white);
+      cursor: pointer;
+      box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    }
+    .tb-btn--save:enabled:hover { background: #00594e; }
+
+    /* Advanced CSS row: button vertically centred against the text block */
+    .tb-option--advanced .tb-btn { align-self: center; flex: none; }
+
+    .tb-footer { display: flex; align-items: center; justify-content: space-between; }
+    .tb-footer-actions { display: flex; gap: 12px; align-items: center; }
+
+    /* ============ Responsive: below the 960px breakpoint the card goes
+       full-width with an 8px margin instead of staying a fixed 700px,
+       centered column (matches the platform's own breakpoint behavior). ============ */
+    @media (max-width: 960px) {
+      .tb-page { padding: 8px; }
+      .tb-card { width: 100%; }
+      .tb-height-row { flex-direction: column; align-items: stretch; gap: 8px; }
+      /* Upload row keeps its horizontal layout on mobile: narrow "No image"
+         preview on the left, the two action buttons side by side on the right. */
+      .tb-option { flex-direction: column; align-items: stretch; gap: 8px; }
+      .tb-select { width: auto; flex: 1 1 auto; }
+      .tb-footer { flex-wrap: wrap; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ============ Tabs ============ -->
+  <nav class="tb-tabs">
+    <a class="tb-tab" href="index.html">
+      <span class="material-icons">format_paint</span>
+      <span class="tb-tab-label">General</span>
+    </a>
+    <a class="tb-tab tb-tab--active" href="login.html">
+      <span class="material-icons">format_paint</span>
+      <span class="tb-tab-label">Login</span>
+    </a>
+    <div class="tb-tab">
+      <span class="material-icons">format_shapes</span>
+      <span class="tb-tab-label">Mail templates</span>
+    </div>
+    <div class="tb-tab">
+      <span class="material-icons">language</span>
+      <span class="tb-tab-label">Custom translation</span>
+    </div>
+    <div class="tb-tab">
+      <span class="material-icons">list</span>
+      <span class="tb-tab-label">Custom menu</span>
+    </div>
+  </nav>
+
+  <div class="tb-page">
+    <div class="tb-card">
+      <!-- Header -->
+      <div class="tb-card-header">
+        <h1 class="tb-card-title">Login white labeling</h1>
+        <button class="tb-icon-btn" aria-label="Help"><span class="material-icons">help</span></button>
+      </div>
+
+      <div class="tb-card-body">
+        <!-- ======== Section: Doman ======== -->
+        <section class="tb-section">
+          <h2 class="tb-section-title">Doman</h2>
+
+          <div class="tb-textfield-wrap">
+            <input type="text" placeholder=" " />
+            <span class="tb-input-label">Domain name</span>
+            <button type="button" class="tb-textfield-link">Create new</button>
+          </div>
+
+          <label class="tb-input">
+            <input type="text" class="tb-input-field" placeholder=" " />
+            <span class="tb-input-label">Base URL*</span>
+          </label>
+
+          <div class="tb-checks">
+            <label class="tb-check">
+              <span class="tb-check-ctrl">
+                <input type="checkbox" class="tb-check-input" />
+                <span class="material-icons tb-check-icon" aria-hidden="true"></span>
+              </span>
+              <span class="tb-check-text">
+                <span class="tb-check-title">Prohibit to use hostname from the client request headers</span>
+                <span class="tb-check-hint">This setting should be enabled for production environments. May cause security issues when disabled</span>
+              </span>
+            </label>
+          </div>
+        </section>
+
+        <!-- ======== Section: Logo & titles ======== -->
+        <section class="tb-section">
+          <h2 class="tb-section-title">Logo &amp; titles</h2>
+
+          <!-- Application title -->
+          <label class="tb-input">
+            <input type="text" class="tb-input-field" placeholder=" " />
+            <span class="tb-input-label">Application title</span>
+          </label>
+
+          <!-- Website icon -->
+          <div class="tb-field">
+            <div class="tb-label">
+              <span class="tb-label-title">Website icon</span>
+              <span class="tb-label-hint">Icon in the browser tab and bookmarks. PNG or ICO, 32×32 px recommended</span>
+            </div>
+            <div class="tb-upload">
+              <div class="tb-upload-preview"><span>No image<br />selected</span></div>
+              <div class="tb-upload-actions">
+                <button class="tb-upload-btn"><span class="material-icons">filter</span><span>Browse from gallery</span></button>
+                <button class="tb-upload-btn"><span class="material-icons">link</span><span>Set link</span></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Logo -->
+          <div class="tb-field">
+            <div class="tb-label">
+              <span class="tb-label-title">Logo</span>
+              <span class="tb-label-hint">SVG or PNG, height at least 96px, up to 200K B</span>
+            </div>
+            <div class="tb-upload">
+              <div class="tb-upload-preview"><span>No image<br />selected</span></div>
+              <div class="tb-upload-actions">
+                <button class="tb-upload-btn"><span class="material-icons">filter</span><span>Browse from gallery</span></button>
+                <button class="tb-upload-btn"><span class="material-icons">link</span><span>Set link</span></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Logo height -->
+          <div class="tb-height-row">
+            <div class="tb-label">
+              <span class="tb-label-title">Logo height</span>
+              <span class="tb-label-hint">Scales logo proportionally and centers it. Increase height (up to 200px) for tall logos</span>
+            </div>
+            <div class="tb-number">
+              <input type="text" inputmode="numeric" class="tb-number-value" value="36" id="logo-height-input" />
+              <span class="tb-stepper">
+                <button type="button" class="up" aria-label="Increase logo height" data-step="1"><img src="assets/39ef9560fee02be906254ba4ec2135539f333a22.svg" alt="" /></button>
+                <button type="button" aria-label="Decrease logo height" data-step="-1"><img src="assets/39ef9560fee02be906254ba4ec2135539f333a22.svg" alt="" /></button>
+              </span>
+              <span class="tb-number-unit">px</span>
+            </div>
+          </div>
+
+          <!-- Show platform name -->
+          <div class="tb-checks">
+            <label class="tb-check">
+              <span class="tb-check-ctrl">
+                <input type="checkbox" class="tb-check-input" />
+                <span class="material-icons tb-check-icon" aria-hidden="true"></span>
+              </span>
+              <span class="tb-check-text">
+                <span class="tb-check-title">Shows the platform name and version in the bottom-left corner</span>
+              </span>
+            </label>
+          </div>
+        </section>
+
+        <!-- ======== Section: Appearance ======== -->
+        <section class="tb-section">
+          <h2 class="tb-section-title">Appearance</h2>
+
+          <!-- Live login preview (exact Figma SVG; recolours via --login-* variables).
+               SVG background (#EEEEEE layers) = Page background color; centred teal card = Primary;
+               button = Accent; the two circle+bar rows = foreground (white | dark). -->
+          <div class="tb-login-box">
+            <span class="tb-login-preview" aria-hidden="true">
+              <svg viewBox="0 0 262 164" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_15_1796)">
+                  <path d="M256.678 0.409912H5.32144C2.60834 0.409912 0.408936 2.61267 0.408936 5.32991V158.67C0.408936 161.387 2.60834 163.59 5.32144 163.59H256.678C259.391 163.59 261.59 161.387 261.59 158.67V5.32991C261.59 2.61267 259.391 0.409912 256.678 0.409912Z" fill="var(--login-page-bg)"/>
+                  <path d="M256.678 0.801392H5.32144C2.60834 0.801392 0.408936 2.99358 0.408936 5.69778V158.302C0.408936 161.006 2.60834 163.198 5.32144 163.198H256.678C259.391 163.198 261.59 161.006 261.59 158.302V5.69778C261.59 2.99358 259.391 0.801392 256.678 0.801392Z" fill="var(--login-page-bg)"/>
+                  <path d="M171.291 36H89.7086C88.2127 36 87 36.9262 87 38.0687V118.931C87 120.074 88.2127 121 89.7086 121H171.291C172.787 121 174 120.074 174 118.931V38.0687C174 36.9262 172.787 36 171.291 36Z" fill="var(--login-primary)"/>
+                  <path d="M117.917 49C119.528 49 120.833 47.6922 120.833 46.0789C120.833 44.4656 119.528 43.1577 117.917 43.1577C116.306 43.1577 115 44.4656 115 46.0789C115 47.6922 116.306 49 117.917 49Z" fill="white"/>
+                  <path d="M145.462 44H125.655C124.562 44 123.675 44.8881 123.675 45.9836C123.675 47.0792 124.562 47.9673 125.655 47.9673H145.462C146.555 47.9673 147.442 47.0792 147.442 45.9836C147.442 44.8881 146.555 44 145.462 44Z" fill="white"/>
+                  <path d="M99 87C100.105 87 101 86.1046 101 85C101 83.8954 100.105 83 99 83C97.8954 83 97 83.8954 97 85C97 86.1046 97.8954 87 99 87Z" fill="var(--login-fg)" fill-opacity="0.85"/>
+                  <path d="M151 83.0066H107C105.895 83.0066 105 83.8991 105 85C105 86.101 105.895 86.9935 107 86.9935H151C152.105 86.9935 153 86.101 153 85C153 83.8991 152.105 83.0066 151 83.0066Z" fill="var(--login-fg)" fill-opacity="0.55"/>
+                  <path d="M99 97C100.105 97 101 96.1046 101 95C101 93.8954 100.105 93 99 93C97.8954 93 97 93.8954 97 95C97 96.1046 97.8954 97 99 97Z" fill="var(--login-fg)" fill-opacity="0.85"/>
+                  <path d="M139 93.0066H107C105.895 93.0066 105 93.8991 105 95C105 96.101 105.895 96.9935 107 96.9935H139C140.105 96.9935 141 96.101 141 95C141 93.8991 140.105 93.0066 139 93.0066Z" fill="var(--login-fg)" fill-opacity="0.55"/>
+                  <path d="M164.843 106H94.5976C93.7153 106 93 106.716 93 107.6V112.4C93 113.284 93.7153 114 94.5976 114H164.843C165.725 114 166.441 113.284 166.441 112.4V107.6C166.441 106.716 165.725 106 164.843 106Z" fill="var(--login-accent)"/>
+                  <path d="M165.39 66H94.6097C93.7207 66 93 66.6268 93 67.4V71.6C93 72.3732 93.7207 73 94.6097 73H165.39C166.279 73 167 72.3732 167 71.6V67.4C167 66.6268 166.279 66 165.39 66Z" fill="#E8F4F2"/>
+                  <path d="M165.39 56H94.6097C93.7207 56 93 56.6268 93 57.4V61.6C93 62.3732 93.7207 63 94.6097 63H165.39C166.279 63 167 62.3732 167 61.6V57.4C167 56.6268 166.279 56 165.39 56Z" fill="#E8F4F2"/>
+                </g>
+                <rect x="0.5" y="0.5" width="261" height="163" rx="5.5" stroke="black" stroke-opacity="0.2"/>
+                <defs>
+                  <clipPath id="clip0_15_1796"><rect width="262" height="164" rx="6" fill="white"/></clipPath>
+                </defs>
+              </svg>
+            </span>
+          </div>
+
+          <!-- Primary palette + Dark foreground grouped (12px apart, per Figma "Option section") -->
+          <div class="tb-appearance-group">
+            <div class="tb-option">
+              <div class="tb-label">
+                <span class="tb-label-title">Primary pallete</span>
+                <span class="tb-label-hint">Main brand color. Sidebar, app bar, page headings, buttons, links and active menu items</span>
+              </div>
+              <div class="tb-palette">
+                <details class="tb-dd" data-default-color="#00695c" data-var="--login-primary">
+                  <summary class="tb-select">
+                    <span class="tb-select-label">Primary pallete</span>
+                    <span class="tb-swatch" data-swatch style="background:#00695c">Aa</span>
+                    <span class="tb-select-value" data-value>Default</span>
+                    <span class="tb-select-caret"><img src="assets/39ef9560fee02be906254ba4ec2135539f333a22.svg" alt="" /></span>
+                  </summary>
+                  <div class="tb-menu" data-menu></div>
+                </details>
+                <button class="tb-edit-btn" aria-label="Customize palette"><img class="tb-edit" src="assets/342cfc3930ea0c368d485efec8286d36b3839a1c.svg" alt="" /></button>
+              </div>
+            </div>
+
+            <!-- Dark foreground -->
+            <div class="tb-checks">
+              <label class="tb-check">
+                <span class="tb-check-ctrl">
+                  <input type="checkbox" class="tb-check-input" id="dark-foreground" />
+                  <span class="material-icons tb-check-icon" aria-hidden="true"></span>
+                </span>
+                <span class="tb-check-text">
+                  <span class="tb-check-title">Dark foreground</span>
+                  <span class="tb-check-hint">Makes login page text and icons dark. Use with light backgrounds</span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Accent palette -->
+          <div class="tb-option">
+            <div class="tb-label">
+              <span class="tb-label-title">Accent palette</span>
+              <span class="tb-label-hint">Checkboxes, radio buttons, toggles, sliders, progress bars and badges</span>
+            </div>
+            <div class="tb-palette">
+              <details class="tb-dd" data-default-color="#ff5722" data-var="--login-accent">
+                <summary class="tb-select">
+                  <span class="tb-select-label">Accent palette</span>
+                  <span class="tb-swatch" data-swatch style="background:#ff5722">Aa</span>
+                  <span class="tb-select-value" data-value>Default</span>
+                  <span class="tb-select-caret"><img src="assets/39ef9560fee02be906254ba4ec2135539f333a22.svg" alt="" /></span>
+                </summary>
+                <div class="tb-menu" data-menu></div>
+              </details>
+              <button class="tb-edit-btn" aria-label="Customize palette"><img class="tb-edit" src="assets/342cfc3930ea0c368d485efec8286d36b3839a1c.svg" alt="" /></button>
+            </div>
+          </div>
+
+          <!-- Page background color -->
+          <div class="tb-option">
+            <div class="tb-label">
+              <span class="tb-label-title">Page background color</span>
+              <span class="tb-label-hint">Fills the main content area behind pages</span>
+            </div>
+            <div class="tb-palette" data-pagebg-anchor>
+              <button class="tb-select" type="button" data-pagebg-open style="cursor:pointer;background:transparent;text-align:left;">
+                <span class="tb-select-label">Page background color</span>
+                <span class="tb-pagebg-swatch" data-pagebg-swatch></span>
+                <span class="tb-pagebg-hex" data-pagebg-hex>#EEEEEE</span>
+              </button>
+              <button class="tb-edit-btn" aria-label="Pick page background color" data-pagebg-open><span class="material-icons-outlined">palette</span></button>
+
+              <!-- Custom colour picker popover -->
+              <div class="tb-cp" data-cp hidden role="dialog" aria-label="Colour picker">
+                <div class="tb-cp-sv" data-cp-sv>
+                  <div class="tb-cp-sv-white"></div>
+                  <div class="tb-cp-sv-black"></div>
+                  <div class="tb-cp-sv-thumb" data-cp-sv-thumb></div>
+                </div>
+                <div class="tb-cp-row">
+                  <div class="tb-cp-current" data-cp-current></div>
+                  <div class="tb-cp-sliders">
+                    <div class="tb-cp-slider tb-cp-hue" data-cp-hue><div class="tb-cp-slider-thumb" data-cp-hue-thumb></div></div>
+                    <div class="tb-cp-slider tb-cp-alpha" data-cp-alpha><div class="tb-cp-alpha-fill" data-cp-alpha-fill></div><div class="tb-cp-slider-thumb" data-cp-alpha-thumb></div></div>
+                  </div>
+                </div>
+                <div class="tb-cp-inputs">
+                  <span class="tb-cp-mode">HEX<span class="material-icons" style="font-size:18px;">arrow_drop_down</span></span>
+                  <span class="tb-cp-hash">#</span>
+                  <input class="tb-cp-hex" data-cp-hex value="EEEEEE" maxlength="6" spellcheck="false" />
+                  <button class="tb-cp-copy" type="button" data-cp-copy aria-label="Copy hex"><span class="material-icons">content_copy</span></button>
+                  <input class="tb-cp-opacity" data-cp-opacity value="100" inputmode="numeric" />
+                  <span class="tb-cp-pct">%</span>
+                </div>
+                <div class="tb-cp-presets" data-cp-presets></div>
+                <div class="tb-cp-actions">
+                  <button class="tb-cp-txtbtn" type="button" data-cp-clear>Clear</button>
+                  <div class="tb-cp-actions-right">
+                    <button class="tb-cp-txtbtn" type="button" data-cp-cancel>Cancel</button>
+                    <button class="tb-cp-txtbtn is-primary" type="button" data-cp-select>Select</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Advanced CSS (row: text left, button right) -->
+          <div class="tb-option tb-option--advanced">
+            <div class="tb-label">
+              <span class="tb-label-title">Advanced CSS</span>
+              <span class="tb-label-hint">Custom CSS for fine-tuning any UI element beyond the palettes — icons, fonts, backgrounds, scrollbars and more. Changes apply across the whole platform, so use with care. For advanced users</span>
+            </div>
+            <button class="tb-btn tb-btn--outline-brand" data-css-btn>Add Custom CSS</button>
+          </div>
+        </section>
+
+        <!-- ======== Footer ======== -->
+        <div class="tb-footer">
+          <button class="tb-btn tb-btn--outline-red">
+            <img src="assets/ab5283d3771dbc53be415d81c5199860937bfe4a.svg" alt="" />
+            Reset to default
+          </button>
+          <div class="tb-footer-actions">
+            <button class="tb-btn tb-btn--preview">Preview</button>
+            <button class="tb-btn tb-btn--save" disabled>Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var saveBtn = document.querySelector(".tb-btn--save");
+    function markDirty() { if (saveBtn) saveBtn.disabled = false; }
+
+    // Advanced CSS: once custom CSS is added the button flips to "Edit Custom CSS".
+    var cssBtn = document.querySelector("[data-css-btn]");
+    if (cssBtn) cssBtn.addEventListener("click", function () {
+      cssBtn.textContent = "Edit Custom CSS";
+      markDirty();
+    });
+
+    document.querySelectorAll(".tb-check-input").forEach(function (el) {
+      el.addEventListener("change", markDirty);
+    });
+    document.querySelectorAll(".tb-input-field, .tb-number-value, .tb-textfield-wrap input").forEach(function (el) {
+      el.addEventListener("input", markDirty);
+    });
+
+    // Logo height stepper: +/-1, clamped to 1-200 (per the field's own hint text).
+    var logoHeightInput = document.getElementById("logo-height-input");
+    document.querySelectorAll(".tb-stepper button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var step = parseInt(btn.getAttribute("data-step"), 10);
+        var next = (parseInt(logoHeightInput.value, 10) || 0) + step;
+        next = Math.min(200, Math.max(1, next));
+        logoHeightInput.value = next;
+        logoHeightInput.dispatchEvent(new Event("input"));
+      });
+    });
+    if (logoHeightInput) {
+      logoHeightInput.addEventListener("blur", function () {
+        var v = Math.min(200, Math.max(1, parseInt(logoHeightInput.value, 10) || 1));
+        logoHeightInput.value = v;
+      });
+    }
+
+    /* ===== Appearance: colour palette dropdowns (Primary / Accent) ===== */
+    // `dark: true` marks swatches too light for white "Aa" text (matches Figma spec).
+    var COLORS = [
+      { name: "Default", color: null },
+      { name: "Red", color: "#ff2725" },
+      { name: "Pink", color: "#fe0062" },
+      { name: "Purple", color: "#aa14b6" },
+      { name: "Deep Purple", color: "#6e37bf" },
+      { name: "Indigo", color: "#3a53bb" },
+      { name: "Blue", color: "#0099fa" },
+      { name: "Light Blue", color: "#00adfb" },
+      { name: "Cyan", color: "#00bfd8" },
+      { name: "Teal", color: "#009988" },
+      { name: "Green", color: "#00b242" },
+      { name: "Light Green", color: "#79c62d", dark: true },
+      { name: "Lime", color: "#c9de00", dark: true },
+      { name: "Yellow", color: "#ffea00", dark: true },
+      { name: "Amber", color: "#ffbf00", dark: true },
+      { name: "Orange", color: "#ff9100", dark: true },
+      { name: "Deep Orange", color: "#ff4400" },
+      { name: "Brown", color: "#7f5445" },
+      { name: "Grey", color: "#9e9e9e" },
+      { name: "Blue Grey", color: "#587e8e" }
+    ];
+    var CHECK = "assets/d30f129bc565db0ad2aa925abee889c017d69545.svg";
+    var root = document.documentElement;
+
+    document.querySelectorAll(".tb-dd").forEach(function (dd) {
+      var defColor = dd.getAttribute("data-default-color");
+      var cssVar = dd.getAttribute("data-var"); // login-preview colour this dropdown drives
+      var menu = dd.querySelector("[data-menu]");
+      var swatch = dd.querySelector("[data-swatch]");
+      var valueEl = dd.querySelector("[data-value]");
+      var summary = dd.querySelector("summary");
+
+      COLORS.forEach(function (c, i) {
+        var col = c.color || defColor;
+        var isSel = i === 0;
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "tb-color" + (isSel ? " is-selected" : "");
+        btn.setAttribute("aria-pressed", isSel ? "true" : "false");
+        btn.innerHTML =
+          '<span class="tb-swatch' + (c.dark ? " tb-swatch--dark" : "") + '" style="background:' + col + '" aria-hidden="true">Aa</span>' +
+          '<span class="tb-color-name">' + c.name + "</span>" +
+          '<img class="tb-color-check" src="' + CHECK + '" alt="" aria-hidden="true" />';
+        btn.addEventListener("click", function () {
+          swatch.style.background = col;
+          swatch.classList.toggle("tb-swatch--dark", !!c.dark);
+          valueEl.textContent = c.name;
+          menu.querySelectorAll(".tb-color").forEach(function (x) {
+            x.classList.remove("is-selected");
+            x.setAttribute("aria-pressed", "false");
+          });
+          btn.classList.add("is-selected");
+          btn.setAttribute("aria-pressed", "true");
+          if (cssVar) root.style.setProperty(cssVar, col); // recolour the live login preview
+          dd.open = false;
+          if (summary) summary.focus();
+          markDirty();
+        });
+        menu.appendChild(btn);
+      });
+    });
+
+    document.addEventListener("click", function (e) {
+      document.querySelectorAll(".tb-dd[open]").forEach(function (dd) {
+        if (!dd.contains(e.target)) dd.open = false;
+      });
+    });
+
+    /* ===== Dark foreground: toggles the two circle+bar rows white <-> dark ===== */
+    var darkFg = document.getElementById("dark-foreground");
+    if (darkFg) {
+      darkFg.addEventListener("change", function () {
+        root.style.setProperty("--login-fg", darkFg.checked ? "#212121" : "#ffffff");
+        markDirty();
+      });
+    }
+
+    /* ===== Page background color: custom MD2 colour picker ===== */
+    (function () {
+      var anchor = document.querySelector("[data-pagebg-anchor]");
+      var cp = document.querySelector("[data-cp]");
+      if (!anchor || !cp) return;
+
+      var fieldSwatch = document.querySelector("[data-pagebg-swatch]");
+      var fieldHex = document.querySelector("[data-pagebg-hex]");
+      var svArea = cp.querySelector("[data-cp-sv]");
+      var svThumb = cp.querySelector("[data-cp-sv-thumb]");
+      var hueBar = cp.querySelector("[data-cp-hue]");
+      var hueThumb = cp.querySelector("[data-cp-hue-thumb]");
+      var alphaBar = cp.querySelector("[data-cp-alpha]");
+      var alphaFill = cp.querySelector("[data-cp-alpha-fill]");
+      var alphaThumb = cp.querySelector("[data-cp-alpha-thumb]");
+      var current = cp.querySelector("[data-cp-current]");
+      var hexInput = cp.querySelector("[data-cp-hex]");
+      var opacityInput = cp.querySelector("[data-cp-opacity]");
+      var presetsWrap = cp.querySelector("[data-cp-presets]");
+
+      var DEFAULT = "#EEEEEE";
+      var PRESETS = [
+        "#455A64","#F44336","#F5A623","#FADB4A","#8BC34A","#4CAF50","#00897B","#2F72D9","#5E35B1","#9C27B0","#E91E63","#7B1E45",
+        "#B0BEC5","#EF9A9A","#FFCC80","#FFF59D","#C5E1A5","#A5D6A7","#80CBC4","#90CAF9","#B39DDB","#CE93D8","#F48FB1","#B08E9E"
+      ];
+      var state = { h: 0, s: 0, v: 0.933, a: 1 }; // reflects #EEEEEE
+
+      /* ---- colour maths ---- */
+      function clamp(n, min, max) { return Math.min(max, Math.max(min, n)); }
+      function hsvToRgb(h, s, v) {
+        var c = v * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = v - c, r = 0, g = 0, b = 0;
+        if (h < 60) { r = c; g = x; } else if (h < 120) { r = x; g = c; }
+        else if (h < 180) { g = c; b = x; } else if (h < 240) { g = x; b = c; }
+        else if (h < 300) { r = x; b = c; } else { r = c; b = x; }
+        return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
+      }
+      function rgbToHex(rgb) {
+        return "#" + rgb.map(function (n) { return ("0" + n.toString(16)).slice(-2); }).join("").toUpperCase();
+      }
+      function hexToRgb(hex) {
+        var m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+        if (!m) return null;
+        var i = parseInt(m[1], 16);
+        return [(i >> 16) & 255, (i >> 8) & 255, i & 255];
+      }
+      function rgbToHsv(r, g, b) {
+        r /= 255; g /= 255; b /= 255;
+        var mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn, h = 0;
+        if (d) {
+          if (mx === r) h = ((g - b) / d) % 6;
+          else if (mx === g) h = (b - r) / d + 2;
+          else h = (r - g) / d + 4;
+          h *= 60; if (h < 0) h += 360;
+        }
+        return { h: h, s: mx ? d / mx : 0, v: mx };
+      }
+      function curHex() { return rgbToHex(hsvToRgb(state.h, state.s, state.v)); }
+      function curCss() {
+        var rgb = hsvToRgb(state.h, state.s, state.v);
+        return state.a >= 1 ? rgbToHex(rgb) : "rgba(" + rgb.join(",") + "," + Math.round(state.a * 100) / 100 + ")";
+      }
+
+      /* ---- render ---- */
+      function render() {
+        var hueRgb = hsvToRgb(state.h, 1, 1);
+        svArea.style.background = "rgb(" + hueRgb.join(",") + ")";
+        svThumb.style.left = (state.s * 100) + "%";
+        svThumb.style.top = ((1 - state.v) * 100) + "%";
+        hueThumb.style.left = (state.h / 360 * 100) + "%";
+        var rgb = hsvToRgb(state.h, state.s, state.v);
+        alphaFill.style.background = "linear-gradient(to right, rgba(" + rgb.join(",") + ",0), rgb(" + rgb.join(",") + "))";
+        alphaThumb.style.left = (state.a * 100) + "%";
+        current.style.background = curCss();
+        if (document.activeElement !== hexInput) hexInput.value = curHex().slice(1);
+        if (document.activeElement !== opacityInput) opacityInput.value = Math.round(state.a * 100);
+      }
+
+      /* ---- drag helpers ---- */
+      function dragify(el, onMove) {
+        function handle(e) {
+          var r = el.getBoundingClientRect();
+          var cx = (e.touches ? e.touches[0].clientX : e.clientX);
+          var cy = (e.touches ? e.touches[0].clientY : e.clientY);
+          onMove(clamp((cx - r.left) / r.width, 0, 1), clamp((cy - r.top) / r.height, 0, 1));
+          render();
+        }
+        el.addEventListener("pointerdown", function (e) {
+          e.preventDefault();
+          handle(e);
+          function mv(ev) { handle(ev); }
+          function up() { document.removeEventListener("pointermove", mv); document.removeEventListener("pointerup", up); }
+          document.addEventListener("pointermove", mv);
+          document.addEventListener("pointerup", up);
+        });
+      }
+      dragify(svArea, function (x, y) { state.s = x; state.v = 1 - y; });
+      dragify(hueBar, function (x) { state.h = x * 360; });
+      dragify(alphaBar, function (x) { state.a = x; });
+
+      hexInput.addEventListener("input", function () {
+        var rgb = hexToRgb(hexInput.value);
+        if (rgb) { var hsv = rgbToHsv(rgb[0], rgb[1], rgb[2]); state.h = hsv.h; state.s = hsv.s; state.v = hsv.v; render(); }
+      });
+      opacityInput.addEventListener("input", function () {
+        var n = parseInt(opacityInput.value, 10);
+        if (!isNaN(n)) { state.a = clamp(n, 0, 100) / 100; render(); }
+      });
+      cp.querySelector("[data-cp-copy]").addEventListener("click", function () {
+        if (navigator.clipboard) navigator.clipboard.writeText(curHex());
+      });
+
+      /* ---- presets ---- */
+      PRESETS.forEach(function (hex) {
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "tb-cp-preset"; b.style.background = hex; b.title = hex;
+        b.addEventListener("click", function () {
+          var rgb = hexToRgb(hex), hsv = rgbToHsv(rgb[0], rgb[1], rgb[2]);
+          state.h = hsv.h; state.s = hsv.s; state.v = hsv.v; render();
+        });
+        presetsWrap.appendChild(b);
+      });
+
+      /* ---- open / close ---- */
+      function loadFromField() {
+        var rgb = hexToRgb(fieldHex.textContent) || hexToRgb(DEFAULT);
+        var hsv = rgbToHsv(rgb[0], rgb[1], rgb[2]);
+        state = { h: hsv.h, s: hsv.s, v: hsv.v, a: 1 };
+      }
+      function open() {
+        loadFromField();
+        cp.hidden = false;
+        render();
+        var backdrop = document.createElement("div");
+        backdrop.className = "tb-cp-backdrop"; backdrop.setAttribute("data-cp-backdrop", "");
+        document.body.appendChild(backdrop);
+        backdrop.addEventListener("click", close);
+      }
+      function close() {
+        cp.hidden = true;
+        var bd = document.querySelector("[data-cp-backdrop]");
+        if (bd) bd.remove();
+      }
+      function apply(cssValue, hexLabel) {
+        root.style.setProperty("--login-page-bg", cssValue);
+        fieldSwatch.style.background = cssValue;
+        fieldHex.textContent = hexLabel;
+        markDirty();
+      }
+
+      anchor.querySelectorAll("[data-pagebg-open]").forEach(function (btn) {
+        btn.addEventListener("click", function (e) { e.stopPropagation(); if (cp.hidden) open(); else close(); });
+      });
+      cp.querySelector("[data-cp-select]").addEventListener("click", function () { apply(curCss(), curHex()); close(); });
+      cp.querySelector("[data-cp-cancel]").addEventListener("click", close);
+      cp.querySelector("[data-cp-clear]").addEventListener("click", function () { apply(DEFAULT, DEFAULT); close(); });
+    })();
+  </script>
+</body>
+</html>
