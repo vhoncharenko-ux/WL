@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>White labeling — General</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+  <style>
+    :root {
+      --brand: #00695c;          /* Tropical Rain Forest / tb-primary */
+      --accent: #ff5722;         /* tb-accent */
+      --red: #f44336;            /* reset */
+      --black-87: rgba(0, 0, 0, 0.87);
+      --black-76: rgba(0, 0, 0, 0.76);
+      --black-54: rgba(0, 0, 0, 0.54);
+      --black-38: rgba(0, 0, 0, 0.38);
+      --black-33: rgba(0, 0, 0, 0.33);
+      --grey-40: #666666;        /* Dove Gray */
+      --border-12: rgba(0, 0, 0, 0.12);
+      --border-38: rgba(0, 0, 0, 0.38);
+      --white: #ffffff;
+      --page-bg: #eeeeee;
+      /* Live preview colours — updated by the palette dropdowns */
+      --preview-primary: #00695c;
+      --preview-accent: #ff5722;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; }
+    body {
+      background: var(--page-bg);
+      color: var(--black-87);
+      font-family: "Roboto", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    .material-icons { font-family: "Material Icons"; font-weight: normal; font-style: normal; line-height: 1; letter-spacing: normal; text-transform: none; white-space: nowrap; word-wrap: normal; direction: ltr; -webkit-font-feature-settings: "liga"; font-feature-settings: "liga"; }
+    img { display: block; }
+
+    /* ============ Tabs ============ */
+    .tb-tabs {
+      display: flex;
+      background: var(--white);
+      border-bottom: 1px solid var(--border-12);
+    }
+    .tb-tab {
+      display: flex;
+      align-items: center;
+      height: 49px;
+      padding: 0 24px;
+      color: var(--black-54);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .tb-tab .material-icons { font-size: 18px; margin-right: 8px; }
+    .tb-tab-label { font-size: 14px; font-weight: 500; }
+    .tb-tab--active {
+      color: var(--brand);
+      box-shadow: inset 0 -4px 0 var(--brand);
+    }
+
+    /* ============ Page & card ============ */
+    .tb-page {
+      display: flex;
+      justify-content: center;
+      padding: 12px;
+    }
+    .tb-card {
+      width: 700px;
+      background: var(--white);
+      border: 1px solid var(--border-12);
+      border-radius: 4px;
+    }
+    .tb-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 16px 12px;
+      border-bottom: 1px solid var(--border-12);
+    }
+    .tb-card-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 32px;
+      color: var(--black-87);
+    }
+    .tb-icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border: none;
+      background: transparent;
+      border-radius: 50%;
+      color: var(--black-54);
+      cursor: pointer;
+    }
+    .tb-icon-btn:hover { background: rgba(0, 0, 0, 0.04); }
+    .tb-icon-btn .material-icons { font-size: 24px; }
+
+    .tb-card-body {
+      display: flex;
+      flex-direction: column;
+      gap: 42px;
+      padding: 16px;
+    }
+
+    /* ============ Sections ============ */
+    .tb-section { display: flex; flex-direction: column; }
+    .tb-section--logos { gap: 20px; }
+    .tb-section--appearance { gap: 20px; }
+    .tb-section--interface { gap: 16px; }
+
+    .tb-section-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: var(--black-87);
+    }
+
+    /* ============ Labels / hints ============ */
+    .tb-label { display: flex; flex-direction: column; gap: 6px; }
+    .tb-label-title { font-size: 14px; font-weight: 500; color: var(--black-87); }
+    .tb-label-hint { font-size: 13px; font-weight: 400; color: var(--grey-40); }
+
+    /* ============ Application title (outlined field) ============ */
+    .tb-textfield {
+      display: block;
+      width: 100%;
+      height: 56px;
+      padding: 0 16px;
+      border: 1px solid var(--border-38);
+      border-radius: 4px;
+      background: var(--white);
+      font: inherit;
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      color: var(--black-87);
+      outline: none;
+    }
+    .tb-textfield::placeholder { color: var(--black-54); opacity: 1; }
+    .tb-textfield:focus { border-color: var(--brand); box-shadow: inset 0 0 0 1px var(--brand); }
+
+    /* ============ Upload field ============ */
+    .tb-field { display: flex; flex-direction: column; gap: 8px; }
+    .tb-upload {
+      display: flex;
+      align-items: stretch;
+      height: 98px;
+      border: 1px solid var(--border-12);
+      border-radius: 4px;
+    }
+    .tb-upload-preview {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 95px;
+      flex: 0 0 95px;
+      border-right: 1px solid var(--border-12);
+      text-align: center;
+    }
+    .tb-upload-preview span {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      letter-spacing: 0.4px;
+      color: var(--black-38);
+    }
+    .tb-upload-actions {
+      flex: 1;
+      display: flex;
+      gap: 8px;
+      padding: 8px;
+    }
+    .tb-upload-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-width: 64px;
+      padding: 17px;
+      border: 1px solid var(--brand);
+      border-radius: 4px;
+      background: var(--white);
+      cursor: pointer;
+    }
+    .tb-upload-btn:hover { background: rgba(0, 105, 92, 0.04); }
+    .tb-upload-btn .material-icons { font-size: 24px; color: var(--brand); }
+    .tb-upload-btn span:last-child {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.375px;
+      color: var(--brand);
+    }
+
+    /* ============ Logo height (label + hint left, number field right) ============ */
+    .tb-height-row { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .tb-height-row .tb-label { flex: 1; }
+    .tb-number {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 56px;
+      width: 121px;
+      flex: none;
+      padding: 0 12px 0 16px;
+      border: 1px solid var(--border-38);
+      border-radius: 4px;
+    }
+    .tb-number-value {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 0;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      color: var(--black-87);
+    }
+    .tb-number-value::-webkit-outer-spin-button,
+    .tb-number-value::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .tb-number-value { -moz-appearance: textfield; }
+    .tb-stepper { display: flex; flex-direction: column; gap: 4px; }
+    .tb-stepper button {
+      display: block;
+      border: none;
+      background: transparent;
+      padding: 2px;
+      margin: -2px;
+      cursor: pointer;
+      line-height: 0;
+    }
+    .tb-stepper img { width: 10px; height: 5px; pointer-events: none; }
+    .tb-stepper .up img { transform: rotate(180deg); }
+    .tb-number-unit {
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      color: var(--black-54);
+    }
+
+    /* ============ Checkboxes (Material Icons: check_box / check_box_outline_blank) ============ */
+    .tb-checks { display: flex; flex-direction: column; gap: 12px; }
+    .tb-check { display: flex; gap: 8px; align-items: flex-start; padding-right: 16px; }
+    .tb-check-ctrl {
+      position: relative;
+      flex: 0 0 40px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 2.5px;
+    }
+    .tb-check-input {
+      position: absolute;
+      inset: 0;
+      margin: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .tb-check-icon { font-size: 24px; color: var(--black-54); pointer-events: none; }
+    .tb-check-icon::before { content: "check_box_outline_blank"; }
+    .tb-check-input:checked ~ .tb-check-icon { color: var(--accent); }
+    .tb-check-input:checked ~ .tb-check-icon::before { content: "check_box"; }
+    .tb-check-input:focus-visible ~ .tb-check-icon { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 2px; }
+    .tb-check-text { display: flex; flex-direction: column; gap: 4px; padding-top: 10px; }
+    .tb-check-title { font-size: 14px; font-weight: 500; color: var(--black-87); }
+    .tb-check-hint { font-size: 13px; font-weight: 400; color: var(--grey-40); }
+
+    /* Conditional "open state" content revealed when its preceding checkbox is checked */
+    .tb-reveal {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      padding-left: 48px;
+      padding-right: 16px;
+    }
+    .tb-check:has(.tb-check-input:checked) + .tb-reveal { display: flex; }
+
+    /* Labeled outlined text field (floating label cut into the top border) — used by revealed fields */
+    .tb-field-labeled {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 54px;
+      padding: 0 16px;
+      border: 1px solid var(--border-38);
+      border-radius: 4px;
+    }
+    .tb-field-labeled:focus-within { border-color: var(--brand); box-shadow: inset 0 0 0 1px var(--brand); }
+    .tb-field-labeled-value {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 0;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      color: var(--black-87);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ============ Appearance : setting / option rows ============ */
+    .tb-setting { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+    .tb-setting > .tb-label { align-self: stretch; }
+    .tb-option { display: flex; gap: 16px; align-items: flex-start; }
+    .tb-option .tb-label { flex: 1; }
+
+    /* Shell radio cards */
+    .tb-shell-row { display: flex; gap: 8px; align-self: stretch; }
+    .tb-shell {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: #fdfdfd;
+      border: 1px solid var(--border-12);
+      border-radius: 4px;
+      padding: 1px 1px 13px;
+      overflow: hidden;
+    }
+    .tb-shell-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding-left: 4px;
+      padding-right: 24px;
+    }
+    .tb-radio {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      flex: 0 0 48px;
+    }
+    .tb-radio-input {
+      appearance: none;
+      -webkit-appearance: none;
+      margin: 0;
+      width: 20px;
+      height: 20px;
+      flex: 0 0 20px;
+      border-radius: 50%;
+      border: 2px solid var(--black-54);
+      position: relative;
+      background: transparent;
+      cursor: pointer;
+    }
+    .tb-radio-input:checked { border-color: var(--brand); }
+    .tb-radio-input:checked::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: 50%;
+      background: var(--brand);
+    }
+    /* Selection ring drawn INSIDE via border-colour + inset shadow — no size change, no layout jump */
+    .tb-shell:has(.tb-radio-input:checked) { border-color: var(--brand); box-shadow: inset 0 0 0 1px var(--brand); }
+    .tb-shell-head span:last-child {
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0.15px;
+      line-height: 24px;
+      color: var(--black-76);
+    }
+
+    /* Shell preview — single Figma SVG; recolours live via --preview-primary / --preview-accent */
+    .sp { display: block; }
+    .sp > svg { display: block; width: 268px; height: 181px; }
+
+    /* Palette dropdown */
+    .tb-palette { display: flex; gap: 4px; align-items: center; flex: 0 0 auto; }
+    .tb-dd { position: relative; }
+    .tb-dd > summary { list-style: none; cursor: pointer; }
+    .tb-dd > summary::-webkit-details-marker { display: none; }
+    .tb-select {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 320px;
+      height: 54px;
+      padding: 0 12px 0 16px;
+      border: 1px solid var(--border-38);
+      border-radius: 4px;
+    }
+    .tb-select-label {
+      position: absolute;
+      top: -6px;
+      left: 12px;
+      padding: 0 4px;
+      background: var(--white);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.4px;
+      line-height: 16px;
+      color: var(--black-54);
+    }
+    .tb-swatch {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 28px;
+      flex: 0 0 40px;
+      border-radius: 99px;
+      color: var(--white);
+      font-size: 16px;
+      font-weight: 400;
+    }
+    .tb-swatch--dark { color: #212121; }
+    .tb-select-value { flex: 1; font-size: 16px; font-weight: 500; color: var(--grey-40); }
+    .tb-select-caret { margin-left: auto; padding-right: 8px; display: inline-flex; align-items: center; }
+    .tb-select-caret img { width: 10px; height: 5px; transition: transform 0.15s ease; }
+    .tb-dd[open] .tb-select-caret img { transform: rotate(180deg); }
+
+    /* Open color menu */
+    .tb-menu {
+      position: absolute;
+      left: 0;
+      top: calc(100% + 2px);
+      width: 320px;
+      max-height: 304px;
+      overflow-y: auto;
+      background: var(--white);
+      border: 1px solid var(--border-12);
+      border-radius: 4px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
+      z-index: 3;
+    }
+    .tb-color {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 8px 16px 6px;
+      border: none;
+      background: var(--white);
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .tb-color:hover { background: rgba(0, 0, 0, 0.04); }
+    .tb-color.is-selected { background: rgba(0, 105, 92, 0.1); }
+    .tb-color-name { flex: 1; font-size: 16px; font-weight: 500; letter-spacing: 0.5px; color: var(--grey-40); }
+    .tb-color-check { width: 24px; height: 24px; margin-left: auto; visibility: hidden; }
+    .tb-color.is-selected .tb-color-check { visibility: visible; }
+
+    /* Edit (customize palette) button */
+    .tb-edit-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      padding: 0;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+    }
+    .tb-edit-btn:hover { background: rgba(0, 105, 92, 0.1); }
+    .tb-edit-btn:active { background: rgba(0, 105, 92, 0.24); }
+    .tb-edit { width: 20px; height: 20px; }
+
+    /* ============ Advanced CSS + footer buttons ============ */
+    .tb-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 36px;
+      min-width: 64px;
+      padding: 0 16px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.438px;
+      cursor: pointer;
+      background: transparent;
+    }
+    .tb-btn--outline-brand { border-color: var(--brand); color: var(--brand); background: var(--white); }
+    .tb-btn--outline-brand:hover { background: rgba(0, 105, 92, 0.04); }
+    .tb-btn--outline-red { border-color: var(--red); color: var(--red); }
+    .tb-btn--outline-red:hover { background: rgba(244, 67, 54, 0.04); }
+    .tb-btn--outline-red img { width: 18px; height: 18px; }
+    .tb-btn--preview {
+      background: var(--white);
+      color: var(--black-87);
+      box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    }
+    .tb-btn--save { background: rgba(0, 0, 0, 0.1); color: var(--black-33); cursor: default; }
+    /* Enabled after any change — MD2 raised primary button */
+    .tb-btn--save:enabled {
+      background: var(--brand);
+      color: var(--white);
+      cursor: pointer;
+      box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    }
+    .tb-btn--save:enabled:hover { background: #00594e; }
+
+    .tb-footer { display: flex; align-items: center; justify-content: space-between; }
+    .tb-footer-actions { display: flex; gap: 12px; align-items: center; }
+  </style>
+</head>
+<body>
+  <!-- ============ Tabs ============ -->
+  <nav class="tb-tabs">
+    <div class="tb-tab tb-tab--active">
+      <span class="material-icons">format_paint</span>
+      <span class="tb-tab-label">General</span>
+    </div>
+    <div class="tb-tab">
+      <span class="material-icons">format_paint</span>
+      <span class="tb-tab-label">Login</span>
+    </div>
+    <div class="tb-tab">
+      <span class="material-icons">format_shapes</span>
+      <span class="tb-tab-label">Mail templates</span>
+    </div>
+    <div class="tb-tab">
+      <span class="material-icons">language</span>
+      <span class="tb-tab-label">Custom translation</span>
+    </div>
+    <div class="tb-tab">
+      <span class="material-icons">list</span>
+      <span class="tb-tab-label">Custom menu</span>
+    </div>
+  </nav>
+
+  <div class="tb-page">
+    <div class="tb-card">
+      <!-- Header -->
+      <div class="tb-card-header">
+        <h1 class="tb-card-title">White labeling</h1>
+        <button class="tb-icon-btn" aria-label="Help"><span class="material-icons">help</span></button>
+      </div>
+
+      <div class="tb-card-body">
+        <!-- ======== Section: Logo & titles ======== -->
+        <section class="tb-section tb-section--logos">
+          <h2 class="tb-section-title">Logo &amp; titles</h2>
+
+          <!-- Application title -->
+          <input type="text" class="tb-textfield" placeholder="Application title" />
+
+          <!-- Website icon -->
+          <div class="tb-field">
+            <div class="tb-label">
+              <span class="tb-label-title">Website icon</span>
+              <span class="tb-label-hint">Icon in the browser tab and bookmarks. PNG or ICO, 32×32 px recommended</span>
+            </div>
+            <div class="tb-upload">
+              <div class="tb-upload-preview"><span>No image<br />selected</span></div>
+              <div class="tb-upload-actions">
+                <button class="tb-upload-btn"><span class="material-icons">filter</span><span>Browse from gallery</span></button>
+                <button class="tb-upload-btn"><span class="material-icons">link</span><span>Set link</span></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Logo -->
+          <div class="tb-field">
+            <div class="tb-label">
+              <span class="tb-label-title">Logo</span>
+              <span class="tb-label-hint">SVG or PNG, height at least 96px, up to 200K B</span>
+            </div>
+            <div class="tb-upload">
+              <div class="tb-upload-preview"><span>No image<br />selected</span></div>
+              <div class="tb-upload-actions">
+                <button class="tb-upload-btn"><span class="material-icons">filter</span><span>Browse from gallery</span></button>
+                <button class="tb-upload-btn"><span class="material-icons">link</span><span>Set link</span></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Logo height -->
+          <div class="tb-height-row">
+            <div class="tb-label">
+              <span class="tb-label-title">Logo height</span>
+              <span class="tb-label-hint">Scales logo proportionally and centers it. Increase height (up to 200px) for tall logos</span>
+            </div>
+            <div class="tb-number">
+              <input type="text" inputmode="numeric" class="tb-number-value" value="36" id="logo-height-input" />
+              <span class="tb-stepper">
+                <button type="button" class="up" aria-label="Increase logo height" data-step="1"><img src="assets/39ef9560fee02be906254ba4ec2135539f333a22.svg" alt="" /></button>
+                <button type="button" aria-label="Decrease logo height" data-step="-1"><img src="assets/39ef9560fee02be906254ba4ec2135539f333a22.svg" alt="" /></button>
+              </span>
+              <span class="tb-number-unit">px</span>
+            </div>
+          </div>
+
+          <!-- Collapsed sidebar logo -->
+          <div class="tb-field">
+            <div class="tb-label">
+              <span class="tb-label-title">Collapsed sidebar logo</span>
+              <span class="tb-label-hint">Square SVG or PNG, at least 48×48 px, up to 100 KB</span>
+            </div>
+            <div class="tb-upload">
+              <div class="tb-upload-preview"><span>No image<br />selected</span></div>
+              <div class="tb-upload-actions">
+                <button class="tb-upload-btn"><span class="material-icons">filter</span><span>Browse from gallery</span></button>
+                <button class="tb-upload-btn"><span class="material-icons">link</span><span>Set link</span></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Branding toggles -->
+          <div class="tb-checks">
+            <label class="tb-check">
+              <span class="tb-check-ctrl">
+                <input type="checkbox" class="tb-check-input" />
+                <span class="material-icons tb-check-icon" aria-hidden="true"></span>
+              </span>
+              <span class="tb-check-text">
+                <span class="tb-check-title">Override Trendz analytics Add-on name</span>
+                <span class="tb-check-hint">Renames the "Trendz" add-on to "Advanced analytics" across the platform</span>
+              </span>
+            </label>
+            <label class="tb-check">
+              <span class="tb-check-ctrl">
+                <input type="checkbox" class="tb-check-input" checked />
+                <span class="material-icons tb-check-icon" aria-hidden="true"></span>
+              </span>
+              <span class="tb-check-text">
+                <span class="tb-check-title">Shows the platform name and version in the bottom-left corner</span>
+              </span>
+            </label>
+            <div class="tb-reveal">
+              <div class="tb-field-labeled">
+                <span class="tb-select-label">Platform Name</span>
+                <input type="text" class="tb-field-labeled-value" value="ThingsBoard" />
+              </div>
+              <div class="tb-field-labeled">
+                <span class="tb-select-label">Platform version</span>
+                <input type="text" class="tb-field-labeled-value" value="4.4.0PE" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ======== Section: Appearance ======== -->
+        <section class="tb-section tb-section--appearance">
+          <h2 class="tb-section-title">Appearance</h2>
+
+          <!-- Application shell -->
+          <div class="tb-setting">
+            <div class="tb-label">
+              <span class="tb-label-title">Application shell</span>
+              <span class="tb-label-hint">Choose how the primary color is applied to the sidebar, app bar and page headings</span>
+            </div>
+            <div class="tb-shell-row">
+              <!-- Light (selected) -->
+              <label class="tb-shell">
+                <span class="tb-shell-head"><span class="tb-radio"><input type="radio" name="app-shell" class="tb-radio-input" checked /></span><span>Light</span></span>
+                <span class="sp" aria-hidden="true"><svg width="268" height="181" viewBox="0 0 268 181" fill="none" xmlns="http://www.w3.org/2000/svg"><g filter="url(#filter0_d_73_570)"><g clip-path="url(#clip0_73_570)"><rect x="12" y="12" width="244" height="157" rx="6" fill="#EEEEEE"/><rect x="32" y="12" width="224" height="16" fill="white"/><path d="M256 51H110V169H256V51Z" fill="white"/><path opacity="0.5" d="M168.938 39H119.062C117.371 39 116 40.7909 116 43C116 45.2091 117.371 47 119.062 47H168.938C170.629 47 172 45.2091 172 43C172 40.7909 170.629 39 168.938 39Z" fill="white"/><path d="M150 146H124C122.343 146 121 147.343 121 149V155C121 156.657 122.343 158 124 158H150C151.657 158 153 156.657 153 155V149C153 147.343 151.657 146 150 146Z" fill="var(--preview-primary)"/><path d="M187 146H161C159.343 146 158 147.343 158 149V155C158 156.657 159.343 158 161 158H187C188.657 158 190 156.657 190 155V149C190 147.343 188.657 146 187 146Z" fill="#212121" fill-opacity="0.08"/><mask id="path-7-inside-1_73_570" fill="white"><path d="M12 12H32V169H12V12Z"/></mask><path d="M12 12H32V169H12V12Z" fill="white"/><path d="M32 12H31V169H32H33V12H32Z" fill="black" fill-opacity="0.14" mask="url(#path-7-inside-1_73_570)"/><circle cx="21.5" cy="21" r="5" fill="var(--preview-primary)"/><circle opacity="0.5" cx="21.5" cy="38" r="5" fill="#212121" fill-opacity="0.35"/><circle opacity="0.5" cx="21.5" cy="55" r="5" fill="#212121" fill-opacity="0.35"/><circle opacity="0.5" cx="21.5" cy="72" r="5" fill="#212121" fill-opacity="0.35"/><circle opacity="0.5" cx="21.5" cy="89" r="5" fill="#212121" fill-opacity="0.35"/><circle opacity="0.5" cx="21.5" cy="106" r="5" fill="#212121" fill-opacity="0.35"/><circle cx="21.5" cy="157" r="5" fill="var(--preview-primary)"/><circle opacity="0.5" cx="246" cy="20" r="4" fill="#212121" fill-opacity="0.6"/><rect x="121.5" y="62.5" width="11" height="11" rx="2.5" fill="var(--preview-accent)" stroke="var(--preview-accent)"/><path d="M124 68.2222L126.182 70L130 66" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="138" y="65" width="72" height="6" rx="3" fill="#212121" fill-opacity="0.1"/><rect x="122" y="80" width="10" height="10" rx="2" stroke="black" stroke-opacity="0.2" stroke-width="2"/><rect x="138" y="82" width="59" height="6" rx="3" fill="#212121" fill-opacity="0.1"/><rect x="122" y="104" width="10" height="10" rx="5" stroke="var(--preview-accent)" stroke-width="2"/><path d="M127 107.1C128.05 107.1 128.9 107.951 128.9 109C128.9 110.05 128.05 110.9 127 110.9C125.951 110.9 125.1 110.05 125.1 109C125.1 107.951 125.951 107.1 127 107.1Z" fill="var(--preview-accent)" stroke="var(--preview-accent)"/><rect x="138" y="106" width="60" height="6" rx="3" fill="#212121" fill-opacity="0.1"/><rect x="122" y="121" width="10" height="10" rx="5" stroke="black" stroke-opacity="0.2" stroke-width="2"/><rect x="138" y="123" width="53" height="6" rx="3" fill="#212121" fill-opacity="0.1"/><path d="M110 37C110 35.3431 111.343 34 113 34H256V50H110V37Z" fill="white"/><path d="M238 58C242.418 58 246 54.4183 246 50C246 45.5817 242.418 42 238 42C233.582 42 230 45.5817 230 50C230 54.4183 233.582 58 238 58Z" fill="var(--preview-accent)"/><rect opacity="0.5" x="38" y="17" width="74" height="6" rx="3" fill="#212121" fill-opacity="0.6"/><rect opacity="0.5" x="117" y="39" width="48" height="6" rx="3" fill="#212121" fill-opacity="0.6"/></g></g><defs><filter id="filter0_d_73_570" x="0" y="0" width="268" height="181" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset/><feGaussianBlur stdDeviation="6"/><feComposite in2="hardAlpha" operator="out"/><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.12 0"/><feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_73_570"/><feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_73_570" result="shape"/></filter><clipPath id="clip0_73_570"><rect x="12" y="12" width="244" height="157" rx="6" fill="white"/></clipPath></defs></svg></span>
+              </label>
+              <!-- Light (primary shell) -->
+              <label class="tb-shell">
+                <span class="tb-shell-head"><span class="tb-radio"><input type="radio" name="app-shell" class="tb-radio-input" /></span><span>Primary</span></span>
+                <span class="sp" aria-hidden="true"><svg width="268" height="181" viewBox="0 0 268 181" fill="none" xmlns="http://www.w3.org/2000/svg"><g filter="url(#filter0_d_73_484)"><g clip-path="url(#clip0_73_484)"><rect x="12" y="12" width="244" height="157" rx="6" fill="#EEEEEE"/><rect x="32" y="12" width="224" height="16" fill="var(--preview-primary)"/><path d="M256 51H110V169H256V51Z" fill="white"/><path opacity="0.5" d="M168.938 39H119.062C117.371 39 116 40.7909 116 43C116 45.2091 117.371 47 119.062 47H168.938C170.629 47 172 45.2091 172 43C172 40.7909 170.629 39 168.938 39Z" fill="white"/><path d="M150 146H124C122.343 146 121 147.343 121 149V155C121 156.657 122.343 158 124 158H150C151.657 158 153 156.657 153 155V149C153 147.343 151.657 146 150 146Z" fill="var(--preview-primary)"/><path d="M187 146H161C159.343 146 158 147.343 158 149V155C158 156.657 159.343 158 161 158H187C188.657 158 190 156.657 190 155V149C190 147.343 188.657 146 187 146Z" fill="#212121" fill-opacity="0.08"/><mask id="path-7-inside-1_73_484" fill="white"><path d="M12 12H32V169H12V12Z"/></mask><path d="M12 12H32V169H12V12Z" fill="var(--preview-primary)"/><path d="M32 12H31V169H32H33V12H32Z" fill="black" fill-opacity="0.2" mask="url(#path-7-inside-1_73_484)"/><circle cx="21.5" cy="21" r="5" fill="white"/><circle opacity="0.5" cx="21.5" cy="38" r="5" fill="white"/><circle opacity="0.5" cx="21.5" cy="55" r="5" fill="white"/><circle opacity="0.5" cx="21.5" cy="72" r="5" fill="white"/><circle opacity="0.5" cx="21.5" cy="89" r="5" fill="white"/><circle opacity="0.5" cx="21.5" cy="106" r="5" fill="white"/><circle cx="21.5" cy="157" r="5" fill="white"/><circle opacity="0.5" cx="246" cy="20" r="4" fill="white"/><rect x="121.5" y="62.5" width="11" height="11" rx="2.5" fill="var(--preview-accent)" stroke="var(--preview-accent)"/><path d="M124 68.2222L126.182 70L130 66" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="138" y="65" width="72" height="6" rx="3" fill="#212121" fill-opacity="0.1"/><rect x="122" y="80" width="10" height="10" rx="2" stroke="black" stroke-opacity="0.2" stroke-width="2"/><rect x="138" y="82" width="59" height="6" rx="3" fill="#212121" fill-opacity="0.1"/><rect x="122" y="104" width="10" height="10" rx="5" stroke="var(--preview-accent)" stroke-width="2"/><path d="M127 107.1C128.05 107.1 128.9 107.951 128.9 109C128.9 110.05 128.05 110.9 127 110.9C125.951 110.9 125.1 110.05 125.1 109C125.1 107.951 125.951 107.1 127 107.1Z" fill="var(--preview-accent)" stroke="var(--preview-accent)"/><rect x="138" y="106" width="60" height="6" rx="3" fill="#212121" fill-opacity="0.1"/><rect x="122" y="121" width="10" height="10" rx="5" stroke="black" stroke-opacity="0.2" stroke-width="2"/><rect x="138" y="123" width="53" height="6" rx="3" fill="#212121" fill-opacity="0.1"/><path d="M110 37C110 35.3431 111.343 34 113 34H256V50H110V37Z" fill="var(--preview-primary)"/><path d="M238 58C242.418 58 246 54.4183 246 50C246 45.5817 242.418 42 238 42C233.582 42 230 45.5817 230 50C230 54.4183 233.582 58 238 58Z" fill="var(--preview-accent)"/><rect opacity="0.5" x="38" y="17" width="74" height="6" rx="3" fill="white"/><rect opacity="0.5" x="118" y="39" width="48" height="6" rx="3" fill="white"/></g></g><defs><filter id="filter0_d_73_484" x="0" y="0" width="268" height="181" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset/><feGaussianBlur stdDeviation="6"/><feComposite in2="hardAlpha" operator="out"/><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.12 0"/><feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_73_484"/><feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_73_484" result="shape"/></filter><clipPath id="clip0_73_484"><rect x="12" y="12" width="244" height="157" rx="6" fill="white"/></clipPath></defs></svg></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Primary palette -->
+          <div class="tb-option">
+            <div class="tb-label">
+              <span class="tb-label-title">Primary pallete</span>
+              <span class="tb-label-hint">Main brand color. Sidebar, app bar, page headings, buttons, links and active menu items</span>
+            </div>
+            <div class="tb-palette">
+              <details class="tb-dd" data-default-color="#00695c" data-var="--preview-primary">
+                <summary class="tb-select">
+                  <span class="tb-select-label">Primary pallete</span>
+                  <span class="tb-swatch" data-swatch style="background:#00695c">Aa</span>
+                  <span class="tb-select-value" data-value>Default</span>
+                  <span class="tb-select-caret"><img src="assets/39ef9560fee02be906254ba4ec2135539f333a22.svg" alt="" /></span>
+                </summary>
+                <div class="tb-menu" data-menu></div>
+              </details>
+              <button class="tb-edit-btn" aria-label="Customize palette"><img class="tb-edit" src="assets/342cfc3930ea0c368d485efec8286d36b3839a1c.svg" alt="" /></button>
+            </div>
+          </div>
+
+          <!-- Accent palette -->
+          <div class="tb-option">
+            <div class="tb-label">
+              <span class="tb-label-title">Accent palette</span>
+              <span class="tb-label-hint">Сheckboxes, radio buttons, toggles, sliders, progress bars and badges</span>
+            </div>
+            <div class="tb-palette">
+              <details class="tb-dd" data-default-color="#ff5722" data-var="--preview-accent">
+                <summary class="tb-select">
+                  <span class="tb-select-label">Accent palette</span>
+                  <span class="tb-swatch" data-swatch style="background:#ff5722">Aa</span>
+                  <span class="tb-select-value" data-value>Default</span>
+                  <span class="tb-select-caret"><img src="assets/39ef9560fee02be906254ba4ec2135539f333a22.svg" alt="" /></span>
+                </summary>
+                <div class="tb-menu" data-menu></div>
+              </details>
+              <button class="tb-edit-btn" aria-label="Customize palette"><img class="tb-edit" src="assets/342cfc3930ea0c368d485efec8286d36b3839a1c.svg" alt="" /></button>
+            </div>
+          </div>
+
+          <!-- Advanced CSS -->
+          <div class="tb-setting">
+            <div class="tb-label">
+              <span class="tb-label-title">Advanced CSS</span>
+              <span class="tb-label-hint">Custom CSS for fine-tuning any UI element beyond the palettes — icons, fonts, backgrounds, scrollbars and more. Changes apply across the whole platform, so use with care. For advanced users</span>
+            </div>
+            <button class="tb-btn tb-btn--outline-brand">Add Custom CSS</button>
+          </div>
+        </section>
+
+        <!-- ======== Section: Interface options ======== -->
+        <section class="tb-section tb-section--interface">
+          <h2 class="tb-section-title">Interface options</h2>
+          <div class="tb-checks">
+            <label class="tb-check">
+              <span class="tb-check-ctrl">
+                <input type="checkbox" class="tb-check-input" checked />
+                <span class="material-icons tb-check-icon" aria-hidden="true"></span>
+              </span>
+              <span class="tb-check-text">
+                <span class="tb-check-title">Show chat bot</span>
+                <span class="tb-check-hint">Displays the support chat bot in the interface for all users</span>
+              </span>
+            </label>
+            <label class="tb-check">
+              <span class="tb-check-ctrl">
+                <input type="checkbox" class="tb-check-input" checked />
+                <span class="material-icons tb-check-icon" aria-hidden="true"></span>
+              </span>
+              <span class="tb-check-text">
+                <span class="tb-check-title">Show connectivity dialog</span>
+                <span class="tb-check-hint">Shows the device connectivity dialog with connection instructions after a device is created</span>
+              </span>
+            </label>
+            <label class="tb-check">
+              <span class="tb-check-ctrl">
+                <input type="checkbox" class="tb-check-input" checked />
+                <span class="material-icons tb-check-icon" aria-hidden="true"></span>
+              </span>
+              <span class="tb-check-text">
+                <span class="tb-check-title">Enable help links</span>
+                <span class="tb-check-hint">Displays contextual help icons (?) across the platform interface</span>
+              </span>
+            </label>
+            <div class="tb-reveal">
+              <div class="tb-field-labeled">
+                <span class="tb-select-label">Help links base url</span>
+                <input type="text" class="tb-field-labeled-value" value="https://thingsboard.io" />
+              </div>
+              <div class="tb-field-labeled">
+                <span class="tb-select-label">UI help base url</span>
+                <input type="text" class="tb-field-labeled-value" value="https://raw.githubusercontent.com/thingsboard/thingsboard-pe-ui-help/release-4.4" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ======== Footer ======== -->
+        <div class="tb-footer">
+          <button class="tb-btn tb-btn--outline-red">
+            <img src="assets/ab5283d3771dbc53be415d81c5199860937bfe4a.svg" alt="" />
+            Reset to default
+          </button>
+          <div class="tb-footer-actions">
+            <button class="tb-btn tb-btn--preview">Preview</button>
+            <button class="tb-btn tb-btn--save" disabled>Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Colour palette options (exact hex values from the Figma design).
+    // The "Default" swatch uses each dropdown's own default colour (primary/accent).
+    // `dark: true` marks swatches whose background is too light for white "Aa" text
+    // (matches the Figma spec exactly: Lime/Yellow/Amber/Orange use #212121 text, all others use white).
+    var COLORS = [
+      { name: "Default", color: null },
+      { name: "Red", color: "#ff2725" },
+      { name: "Pink", color: "#fe0062" },
+      { name: "Purple", color: "#aa14b6" },
+      { name: "Deep Purple", color: "#6e37bf" },
+      { name: "Indigo", color: "#3a53bb" },
+      { name: "Blue", color: "#0099fa" },
+      { name: "Light Blue", color: "#00adfb" },
+      { name: "Cyan", color: "#00bfd8" },
+      { name: "Teal", color: "#009988" },
+      { name: "Green", color: "#00b242" },
+      { name: "Light Green", color: "#79c62d", dark: true },
+      { name: "Lime", color: "#c9de00", dark: true },
+      { name: "Yellow", color: "#ffea00", dark: true },
+      { name: "Amber", color: "#ffbf00", dark: true },
+      { name: "Orange", color: "#ff9100", dark: true },
+      { name: "Deep Orange", color: "#ff4400" },
+      { name: "Brown", color: "#7f5445" },
+      { name: "Grey", color: "#9e9e9e" },
+      { name: "Blue Grey", color: "#587e8e" }
+    ];
+    var CHECK = "assets/d30f129bc565db0ad2aa925abee889c017d69545.svg";
+    var root = document.documentElement;
+    var saveBtn = document.querySelector(".tb-btn--save");
+
+    // Material Design 2 dirty state: enable Save after any change.
+    function markDirty() { if (saveBtn) saveBtn.disabled = false; }
+
+    document.querySelectorAll(".tb-dd").forEach(function (dd) {
+      var defColor = dd.getAttribute("data-default-color");
+      var cssVar = dd.getAttribute("data-var"); // live-preview colour this dropdown drives
+      var menu = dd.querySelector("[data-menu]");
+      var swatch = dd.querySelector("[data-swatch]");
+      var valueEl = dd.querySelector("[data-value]");
+      var summary = dd.querySelector("summary");
+
+      COLORS.forEach(function (c, i) {
+        var col = c.color || defColor;
+        var isSel = i === 0;
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "tb-color" + (isSel ? " is-selected" : "");
+        btn.setAttribute("aria-pressed", isSel ? "true" : "false");
+        btn.innerHTML =
+          '<span class="tb-swatch' + (c.dark ? " tb-swatch--dark" : "") + '" style="background:' + col + '" aria-hidden="true">Aa</span>' +
+          '<span class="tb-color-name">' + c.name + "</span>" +
+          '<img class="tb-color-check" src="' + CHECK + '" alt="" aria-hidden="true" />';
+        btn.addEventListener("click", function () {
+          swatch.style.background = col;
+          swatch.classList.toggle("tb-swatch--dark", !!c.dark);
+          valueEl.textContent = c.name;
+          menu.querySelectorAll(".tb-color").forEach(function (x) {
+            x.classList.remove("is-selected");
+            x.setAttribute("aria-pressed", "false");
+          });
+          btn.classList.add("is-selected");
+          btn.setAttribute("aria-pressed", "true");
+          if (cssVar) root.style.setProperty(cssVar, col); // recolour the live shell preview
+          dd.open = false;
+          if (summary) summary.focus(); // keep keyboard focus on the trigger
+          markDirty();
+        });
+        menu.appendChild(btn);
+      });
+    });
+
+    // Enable Save when a checkbox or shell radio changes.
+    document.querySelectorAll(".tb-check-input, .tb-radio-input").forEach(function (el) {
+      el.addEventListener("change", markDirty);
+    });
+
+    // Enable Save as soon as the user types into any text field.
+    document.querySelectorAll(".tb-textfield, .tb-number-value, .tb-field-labeled-value").forEach(function (el) {
+      el.addEventListener("input", markDirty);
+    });
+
+    // Logo height stepper: +/-1, clamped to 1-200 (per the field's own hint text).
+    var logoHeightInput = document.getElementById("logo-height-input");
+    document.querySelectorAll(".tb-stepper button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var step = parseInt(btn.getAttribute("data-step"), 10);
+        var next = (parseInt(logoHeightInput.value, 10) || 0) + step;
+        next = Math.min(200, Math.max(1, next));
+        logoHeightInput.value = next;
+        logoHeightInput.dispatchEvent(new Event("input"));
+      });
+    });
+    if (logoHeightInput) {
+      logoHeightInput.addEventListener("blur", function () {
+        var v = Math.min(200, Math.max(1, parseInt(logoHeightInput.value, 10) || 1));
+        logoHeightInput.value = v;
+      });
+    }
+
+    // Close any open dropdown when clicking outside of it.
+    document.addEventListener("click", function (e) {
+      document.querySelectorAll(".tb-dd[open]").forEach(function (dd) {
+        if (!dd.contains(e.target)) dd.open = false;
+      });
+    });
+  </script>
+</body>
+</html>
