@@ -53,10 +53,14 @@
       display: flex;
       background: var(--white);
       border-bottom: 1px solid var(--border-12);
+      overflow-x: auto;            /* scroll the tab bar itself instead of overflowing the page */
+      scrollbar-width: none;       /* Firefox: hide the horizontal scrollbar */
     }
+    .tb-tabs::-webkit-scrollbar { display: none; } /* WebKit: hide the horizontal scrollbar */
     .tb-tab {
       display: flex;
       align-items: center;
+      flex: 0 0 auto;              /* keep each tab's width; don't squeeze */
       height: 49px;
       padding: 0 24px;
       color: var(--black-54);
