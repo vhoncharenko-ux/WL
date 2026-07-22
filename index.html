@@ -529,6 +529,27 @@
 
     .tb-footer { display: flex; align-items: center; justify-content: space-between; }
     .tb-footer-actions { display: flex; gap: 12px; align-items: center; }
+
+    /* ============ Responsive: below the 960px breakpoint the card goes
+       full-width with an 8px margin instead of staying a fixed 700px,
+       centered column (matches the platform's own breakpoint behavior). ============ */
+    @media (max-width: 960px) {
+      .tb-page { padding: 8px; }
+      .tb-card { width: 100%; }
+
+      /* Rows that pack a fixed-width control next to flexible label text
+         need to wrap instead of overflowing once the card is fluid. */
+      .tb-option { flex-wrap: wrap; }
+      .tb-height-row { flex-wrap: wrap; }
+      .tb-upload { flex-wrap: wrap; height: auto; }
+      .tb-upload-preview { flex-basis: 100%; height: 74px; border-right: none; border-bottom: 1px solid var(--border-12); }
+      .tb-upload-actions { flex-basis: 100%; }
+      .tb-shell-row { flex-wrap: wrap; }
+      .tb-shell { flex: 1 1 260px; }
+      .tb-palette { flex-wrap: wrap; }
+      .tb-select { width: auto; flex: 1 1 260px; }
+      .tb-footer { flex-wrap: wrap; gap: 12px; }
+    }
   </style>
 </head>
 <body>
