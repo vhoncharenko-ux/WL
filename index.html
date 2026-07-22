@@ -537,16 +537,19 @@
       .tb-page { padding: 8px; }
       .tb-card { width: 100%; }
 
-      /* Rows that pack a fixed-width control next to flexible label text
-         need to wrap instead of overflowing once the card is fluid. */
-      .tb-option { flex-wrap: wrap; }
-      .tb-height-row { flex-wrap: wrap; }
+      /* Rows that pack a fixed-width control next to label text go fully
+         vertical once the card is fluid — a row-wrap only helps when the
+         label text itself is what runs out of room, but here the label
+         just wraps internally and "fits" beside the control, leaving a
+         tall row with the control stranded at the top and dead space
+         below it. Stacking avoids that outright. */
+      .tb-option { flex-direction: column; align-items: stretch; gap: 8px; }
+      .tb-height-row { flex-direction: column; align-items: stretch; gap: 8px; }
       .tb-upload { flex-wrap: wrap; height: auto; }
       .tb-upload-preview { flex-basis: 100%; height: 74px; border-right: none; border-bottom: 1px solid var(--border-12); }
       .tb-upload-actions { flex-basis: 100%; }
       .tb-shell-row { flex-wrap: wrap; }
       .tb-shell { flex: 1 1 260px; }
-      .tb-palette { flex-wrap: wrap; }
       .tb-select { width: auto; flex: 1 1 260px; }
       .tb-footer { flex-wrap: wrap; gap: 12px; }
     }
